@@ -10,10 +10,18 @@ RUN git clone https://github.com/s3fs-fuse/s3fs-fuse.git; \
   make test;  \
   make install;
 
-CMD s3fs
-
 FROM alpine:3.3
 MAINTAINER sysadmin@kronostechnologies.com
-RUN apk --update --no-cache add fuse libxml2-dev libstdc++ curl openssl
+RUN apk --update --no-cache add fuse libxml2-dev libstdc++ curl openssl bash
 COPY --from=builder /usr/bin/s3fs /usr/bin/s3fs
+
+# Install entrypoint
+ADD https://github.com/kronostechnologies/docker-init-entrypoint/releases/download/1.3.0/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Install start/stop scripts
+COPY ./entrypoint /k
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD s3fs
+
