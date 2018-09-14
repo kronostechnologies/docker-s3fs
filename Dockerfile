@@ -1,6 +1,6 @@
-FROM alpine:3.3 as builder
-ENV S3FS_VERSION=v1.82
-RUN apk --update --no-cache add fuse alpine-sdk automake autoconf libxml2-dev fuse-dev curl-dev git openssl-dev
+FROM alpine:3.8 as builder
+ENV S3FS_VERSION=v1.84
+RUN apk --update --no-cache add fuse alpine-sdk automake autoconf libxml2-dev fuse-dev curl-dev git libressl-dev
 RUN git clone https://github.com/s3fs-fuse/s3fs-fuse.git; \
   cd s3fs-fuse; \
   git checkout tags/${S3FS_VERSION}; \
@@ -10,9 +10,9 @@ RUN git clone https://github.com/s3fs-fuse/s3fs-fuse.git; \
   make test;  \
   make install;
 
-FROM alpine:3.3
+FROM alpine:3.8
 MAINTAINER sysadmin@kronostechnologies.com
-RUN apk --update --no-cache add fuse libxml2-dev libstdc++ curl openssl bash
+RUN apk --update --no-cache add fuse libxml2-dev libstdc++ curl libressl bash
 COPY --from=builder /usr/bin/s3fs /usr/bin/s3fs
 
 # Install entrypoint
