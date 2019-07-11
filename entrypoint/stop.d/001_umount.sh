@@ -1,7 +1,2 @@
 #!/bin/bash
-if mount | grep /mnt > /dev/null; then
-  # lsof /mnt?
-  umount -f /mnt
-else
-  true
-fi
+umount -f "$(mount | grep "^s3fs" | cut -d' ' -f3)" || true
